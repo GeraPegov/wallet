@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 
-from app.services import WalletManager, get_db, CreateWalletHash
+from app.services import CreateWalletHash
+from app.repositories import WalletManager, get_db
 
 def get_hash():
     return CreateWalletHash()

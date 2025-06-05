@@ -1,6 +1,6 @@
 from sqlalchemy.orm import  mapped_column, Mapped
 from sqlalchemy import Integer, String
-from app.db.postgres import Base
+from app.core.database import Base
 
 class Wallet(Base):
     __tablename__ = 'wallet'

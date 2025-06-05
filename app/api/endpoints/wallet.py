@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.services import CreateWalletHash, WalletManager
+from app.repositories import WalletManager
+from app.services import CreateWalletHash
 from app.dependencies.depends_wallet import get_hash, get_wallet_manager
+# from app.schemas.amount import Amount
 
 
 router = APIRouter()

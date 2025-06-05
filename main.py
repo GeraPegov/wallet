@@ -1,14 +1,14 @@
-import sys
-from pathlib import Path
+# import sys
+# from pathlib import Path
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 
-from app.db.postgres import AsyncSessionLocal
-from app.api.routers import wallet, balance
+from app.api.router import api_router
 
-sys.path.append(str(Path(__file__).parent))
+# sys.path.append(str(Path(__file__).parent))
 
-app = FastAPI()
+app = FastAPI(
+    title='Wallet'
+)
 
-app.include_router(wallet.router)
-app.include_router(balance.router)
+app.include_router(api_router)
