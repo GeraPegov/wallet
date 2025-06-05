@@ -17,7 +17,7 @@ class WalletManager():
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_wallet(self, wallet_id: str):
+    async def add_wallet(self, wallet_id: str):
         try:
             new_walletID = Wallet(wallet_id=wallet_id)
             self.session.add(new_walletID)
