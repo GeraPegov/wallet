@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.database import AsyncSessionLocal
 from app.core.models import Wallet
@@ -22,38 +23,52 @@ class WalletManager():
             self.session.add(new_walletID)
             await self.session.commit()
             await self.session.refresh(new_walletID)
-            return 'Success'
+            return 
         except Exception as e:
             await self.session.rollback()
-            raise HTTPException(500, 'databaase error')
+            raise HTTPException(500, 'Ошибка базы данных')
 
-    async def deposit(self, wallet_id: str, amount: int):
+    async def deposit(self, wallet_id: str, amount: int) -> int:
         try:
             id = (await self.session.execute(
                 select(Wallet.id)
                 .where(Wallet.wallet_id==wallet_id)
                 )).scalar_one_or_none()
+            
+            if not id:
+                raise HTTPException(404, f'Кошелек {wallet_id} не найден')
+            #Поиск кошелька по id записи
             wallet = await self.session.get(Wallet, id)
             wallet.total += amount
             await self.session.commit()
-            return 'Success'
-        except Exception as e:
-            raise HTTPException(500)
+            return wallet.total
         
-    async def withdraw(self, wallet_id: str, amount: int):
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            raise HTTPException(500, f'Ошибка базы данных: {str(e)}')
+        
+    async def withdraw(self, wallet_id: str, amount: int) -> int:
         try:
             id = (await self.session.execute(
                 select(Wallet.id)
                 .where(Wallet.wallet_id==wallet_id)
                 )).scalar_one_or_none()
+            
+            if not id:
+                raise HTTPException(404, f'Кошелек {wallet_id} не найден')
+            #Поиск кошелька по id записи
             wallet = await self.session.get(Wallet, id)
+            #Ошибка при недостатке средств
             if amount > wallet.total:
-                return 'Недостаточно средств'
+                return HTTPException(400, 'Недостаточно средств')
+            
             wallet.total -= amount
             await self.session.commit()
-            return 'Success'
-        except Exception as e:
-            raise HTTPException(500)
+            return wallet.total
+        
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            raise HTTPException(500, f'Ошибка базы данных: {str(e)}')
         
     async def balance(self, wallet_id: str):
         try:
@@ -62,5 +77,5 @@ class WalletManager():
                 .where(Wallet.wallet_id==wallet_id)
             )).scalar_one_or_none()
             return balance
-        except Exception as e:
-            raise HTTPException(500)
+        except SQLAlchemyError as e:
+            raise HTTPException(500, f'Ошибка базы данных: {str(e)}')

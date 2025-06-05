@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление кошельком</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .hidden-field {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Управление электронным кошельком</h1>
+
+    <div class="card">
+        <h2>Создать кошелек</h2>
+        <form id="'createWalletForm" action="/wallet" method="get">
+                <div class="form-group">
+                    <button type="submit">Создать</button>
+                </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Операции с кошельком</h2>
+
+        <form id="depositForm" class="'operation-form" action="/wallet/wallet_id/operation?operation_type=DEPOSIT" method="post">
+            <div class="form-group">
+                <label for="wallet_id">Номер кошелька:</label>
+                <textarea id="wallet_id" name="wallet_id" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="amount">Сумма:</label>
+                <textarea id="amount" name="amount" required></textarea>
+            </div>
+            <button type="submit">Зачислить</button>
+        </form>
+
+        <form id="withdrawForm" action="/wallet/wallet_id/operation?operation_type=WITHDRAW" method="post">
+            <div class="form-group">
+                <label for="wallet_id">Номер кошелька:</label>
+                <textarea id="wallet_id" name="wallet_id" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="amount">Сумма:</label>
+                <textarea id="amount" name="amount" required></textarea>
+            </div>
+            <button type="submit">Снять</button>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Баланс</h2>
+        <form id="balanceForm" action="/balance/wallet_id" method="get">
+            <div class="form-group">
+                <label for="wallet_id">Номер кошелька:</label>
+                <textarea id="wallet_id" name="wallet_id" required></textarea>
+            </div>
+            <button type="submit">Проверить баланс</button>
+        </form>
+    </div>
+</body>
+</html>
