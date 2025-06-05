@@ -4,52 +4,65 @@ from app.repositories import WalletManager
 from app.services import CreateWalletHash
 from app.dependencies.depends_wallet import get_wallet_hash, get_wallet_manager
 
-
 router = APIRouter()
 
 @router.get('/')
-async def operation_wallet(
-    wallet_id: CreateWalletHash = Depends(get_wallet_hash),
+async def create_new_wallet(
+    wallet_hash: CreateWalletHash = Depends(get_wallet_hash),
     create_wallet: WalletManager = Depends(get_wallet_manager),
     ) -> dict:
-    '''Создание кошелька
+    """
+    Создание нового кошелька.
+
+    Генерирует уникальный идентификатор кошелька с помощью `CreateWalletHash`,
+    а затем добавляет новый кошелёк в базу данных через `WalletManager`.
 
     Args:
-        wallet_id: Генерация айди кошелька через класс CreateWalletHash
-        create_wallet: Создание кошелька через метод add_wallet класса WalletManager
-    
+        wallet_hash (CreateWalletHash): Сервис для генерации хэша кошелька.
+        create_wallet (WalletManager): Менеджер для работы с кошельками.
+
     Returns:
-        dict: Статус и ID кошелька
-    '''
-    generator_hash = wallet_id.hash()
+        dict: Статус операции и ID созданных кошельков.
+
+    Raises:
+        HTTPException: Если произошла ошибка при добавлении в базу данных.
+    """
+    generator_hash = wallet_hash.hash()
     #Создание кошелька
     await create_wallet.add_wallet(wallet_id=generator_hash)
     return {
-        'wallet_id': wallet_id,
+        'wallet_id': generator_hash,
         'status': 'success',
     }
 
 @router.post('/wallet_id/operation')
 async def transaction(
-    operation_type: str,
+    type_of_operation: str,
     wallet_id: str = Form(...), 
     amount: int = Form(..., gt=0, lt=10**5, description='Число должно быть положительным'), 
     make_transaction: WalletManager = Depends(get_wallet_manager),
     ) -> dict:
-    '''Транзакция(внесение(DEPOSIT) или снятие(WITHDRAW))
-    
+    """
+    Выполнение транзакции (внесение или снятие средств).
+
+    Обрабатывает операции вида `DEPOSIT` и `WITHDRAW`, используя данные из формы,
+    а также проверяет корректность суммы транзакции.
+
     Args:
-        wallet_id: ID кошелька из шаблона HTML
-        operation_type: Вид операции, передается через шаблон HTML
-        amount: Сумма при транзакции
-        make_transaction: Проведение транзакции через методы класса WalletManager
+        type_of_operation (str): Тип операции: 'DEPOSIT' или 'WITHDRAW'.
+        wallet_id (str): Уникальный ID кошелька.
+        amount (int): Сумма транзакции. Обязательно положительная и меньше 100,000.
+        make_transaction (WalletManager): Менеджер для работы с кошельками.
 
     Returns:
-        dict: Статус код и баланс после транзакции
-    '''
-    if operation_type == 'DEPOSIT':
+        dict: Статус операции и текущий баланс кошелька после транзакции.
+
+    Raises:
+        HTTPException: Если тип операции неверный или произошла ошибка при выполнении.
+    """
+    if type_of_operation == 'DEPOSIT':
         result = await make_transaction.deposit(wallet_id, amount)
-    elif operation_type == 'WITHDRAW':
+    elif type_of_operation == 'WITHDRAW':
         result = await make_transaction.withdraw(wallet_id, amount)
     return {
         'status': 'success',
