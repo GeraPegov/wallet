@@ -1,12 +1,15 @@
-# from pathlib import Path 
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
-# BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path('D:/проекты/Wallet')
 
 
 class Setting(BaseSettings):
-    DATABASE_URL: str
+    MY_DB_URL: str
 
     class Config:
-        env_file = '.env'
-# settings = Setting()
+        env_file = BASE_DIR / '.env'
+
+
+settings = Setting()

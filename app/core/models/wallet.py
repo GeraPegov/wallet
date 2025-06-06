@@ -1,6 +1,9 @@
-from sqlalchemy.orm import  mapped_column, Mapped
+
 from sqlalchemy import Integer, String
-from app.core.database import Base
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.core import Base
+
 
 class Wallet(Base):
     __tablename__ = 'wallet'
