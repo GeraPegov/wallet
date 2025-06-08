@@ -40,8 +40,10 @@ class WalletManager():
             # Поиск кошелька по id записи
             wallet = await self.session.get(Wallet, id)
             wallet.total += amount
+            result_total = wallet.total
             await self.session.commit()
-            return wallet.total 
+
+            return result_total
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise HTTPException(500, f'Ошибка базы данных: {str(e)}')
@@ -60,8 +62,9 @@ class WalletManager():
             if amount > wallet.total:
                 return HTTPException(400, 'Недостаточно средств')       
             wallet.total -= amount
+            total_result = wallet.total
             await self.session.commit()
-            return wallet.total
+            return total_result
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise HTTPException(500, f'Ошибка базы данных: {str(e)}')

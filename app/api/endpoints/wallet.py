@@ -37,7 +37,7 @@ async def create_new_wallet(
     }
 
 
-@router.post('/wallet_id/operation')
+@router.post('/wallets/wallet_id/operation')
 async def transaction(
         type_of_operation: str,
         wallet_id: str = Form(...),
