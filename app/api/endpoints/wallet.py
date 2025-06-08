@@ -33,7 +33,7 @@ async def create_new_wallet(
     await create_wallet.add_wallet(wallet_id=generator_hash)
     return {
         'wallet_id': generator_hash,
-        'status': 'success',
+        'status': 'success'
     }
 
 
@@ -73,4 +73,5 @@ async def transaction(
         result = await make_transaction.withdraw(wallet_id, amount)
     return {
         'status': 'success',
-        'balance': result}
+        'balance': result
+    }

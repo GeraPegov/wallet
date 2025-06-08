@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-BASE_DIR = Path('D:/проекты/Wallet')
+BASE_DIR = Path(__file__).parent.parent.parent
 
 
 class Setting(BaseSettings):
@@ -14,3 +14,4 @@ class Setting(BaseSettings):
 
 
 settings = Setting()
+print(settings.MY_DB_URL)

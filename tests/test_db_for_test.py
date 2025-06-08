@@ -14,4 +14,3 @@ async def db_session():
     AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession)
     async with AsyncSessionLocal() as session:
         yield session
-

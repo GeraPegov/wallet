@@ -16,4 +16,3 @@ async def test_balance(db_session):
     await test_manager.deposit(example_wallet, example_amount)
     test_show_balance = await test_manager.balance(example_wallet)
     assert test_show_balance == example_amount
-    
