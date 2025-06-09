@@ -1,7 +1,6 @@
 import pytest
 
 from app.repositories.wallet_manager import WalletManager
-from tests.test_db_for_test import db_session
 
 
 @pytest.mark.asyncio

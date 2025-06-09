@@ -4,7 +4,6 @@ from sqlalchemy import select
 from app.core.models.wallet import Wallet
 from app.repositories.wallet_manager import WalletManager
 from app.services.get_wallet_id import CreateWalletHash
-from tests.test_db_for_test import db_session
 
 
 def test_createhash():
