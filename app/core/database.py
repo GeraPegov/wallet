@@ -16,3 +16,5 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 Base = declarative_base()
+
+print(Base.metadata.tables.keys())

@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
 
 from app.core.database import Base
 
-
 @pytest_asyncio.fixture
 async def db_session():
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
