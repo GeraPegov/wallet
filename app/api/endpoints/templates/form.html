@@ -67,7 +67,7 @@
 
     <div class="card">
         <h2>Создать кошелек</h2>
-        <form id="'createWalletForm" action="/wallet" method="get">
+        <form id="'createWalletForm" action="/api/v1/wallets" method="get">
                 <div class="form-group">
                     <button type="submit">Создать</button>
                 </div>
@@ -77,7 +77,7 @@
     <div class="card">
         <h2>Операции с кошельком</h2>
 
-        <form id="depositForm" class="'operation-form" action="/wallet/wallet_id/operation?type_of_operation=DEPOSIT" method="post">
+        <form id="depositForm" class="'operation-form" action="/api/v1/wallets/wallet_id/operation?type_of_operation=DEPOSIT" method="post">
             <div class="form-group">
                 <label for="wallet_id">Номер кошелька:</label>
                 <textarea id="wallet_id" name="wallet_id" required></textarea>
@@ -89,7 +89,7 @@
             <button type="submit">Зачислить</button>
         </form>
 
-        <form id="withdrawForm" action="/wallet/wallet_id/operation?type_of_operation=WITHDRAW" method="post">
+        <form id="withdrawForm" action="/api/v1/wallets/wallet_id/operation?type_of_operation=WITHDRAW" method="post">
             <div class="form-group">
                 <label for="wallet_id">Номер кошелька:</label>
                 <textarea id="wallet_id" name="wallet_id" required></textarea>
@@ -103,7 +103,7 @@
     </div>
     <div class="card">
         <h2>Баланс</h2>
-        <form id="balanceForm" action="/balance/wallet_id" method="get">
+        <form id="balanceForm" action="/api/v1/balance/wallet_id" method="get">
             <div class="form-group">
                 <label for="wallet_id">Номер кошелька:</label>
                 <textarea id="wallet_id" name="wallet_id" required></textarea>

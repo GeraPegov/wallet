@@ -7,7 +7,7 @@ from app.services import CreateWalletHash
 router = APIRouter()
 
 
-@router.get('/')
+@router.get('/wallets')
 async def create_new_wallet(
         wallet_hash: CreateWalletHash = Depends(get_wallet_hash),
         create_wallet: WalletManager = Depends(get_wallet_manager)
