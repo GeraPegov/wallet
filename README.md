@@ -16,10 +16,10 @@ git clone https://github.com/GeraPegov/wallet
 cd wallet
 
 # Запустить с помощью Docker-compose
-docker-compose up -d
+docker-compose up --build
 ```
 
-Сервис будет доступен по адресу: http://localhost:8000
+Сервис будет доступен по адресу: http://0.0.0.0:8001
 
 ## Запуск без Docker
 
@@ -37,6 +37,8 @@ source .venv/bin/activate # На macOS, Linux
 # Установить зависимости
 pip install -r requirements.txt
 
+# Настроить сервер PostgreSQL и в файле .env изменить адрес URL
+
 # Настроить миграции alembic
 alembic init alembic
 # Если используете свой сервер PostgreSQL - в .env пропишите путь
@@ -52,6 +54,9 @@ uvicorn main:app --reload
 Конфигурация может быть задана через переменные окружения в фалйе `.env`:
 
 - `MY_DB_URL` - URL базы данных
+- `POSTGRES_USER` - Имя пользователя БД
+- `POSTGRES_PASSWORD` - Пароль пользователя БД
+- `POSTGRES_DB` -Название БД
 
 ## API
 

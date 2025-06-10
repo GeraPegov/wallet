@@ -6,7 +6,7 @@ from app.repositories import WalletManager
 router = APIRouter()
 
 
-@router.get('/balance/wallet_id')
+@router.get('/wallets/wallet_id')
 async def show_balance(
     wallet_id: str = Query(...),
     get_balance: WalletManager = Depends(get_wallet_manager)
