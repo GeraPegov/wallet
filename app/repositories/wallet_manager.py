@@ -14,7 +14,6 @@ async def get_db():
         finally:
             await session.close()
 
-
 class WalletManager():
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -31,6 +30,11 @@ class WalletManager():
 
     async def deposit(self, wallet_id: str, amount: int) -> int:
         try:
+            """
+            Изменения в БД идут в один запрос.
+            Поиск записи идёт по номеру кошелька "wallet_id" 
+            Новое значение через "amount"
+            """
             total = await self.session.execute(
                 update(Wallet)
                 .where(Wallet.wallet_id == wallet_id)
@@ -40,7 +44,6 @@ class WalletManager():
             new_total = total.scalar_one_or_none()
             if not new_total:
                 raise HTTPException(404, f'Кошелек {wallet_id} не найден')
-            # Поиск кошелька по id записи
             await self.session.commit()
             return new_total
         except SQLAlchemyError as e:
