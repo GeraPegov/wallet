@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,40 +31,35 @@ class WalletManager():
 
     async def deposit(self, wallet_id: str, amount: int) -> int:
         try:
-            id = (await self.session.execute(
-                select(Wallet.id)
+            total = await self.session.execute(
+                update(Wallet)
                 .where(Wallet.wallet_id == wallet_id)
-                )).scalar_one_or_none()
-            if not id:
+                .values(total=Wallet.total+amount)
+                .returning(Wallet.total)
+            )
+            new_total = total.scalar_one_or_none()
+            if not new_total:
                 raise HTTPException(404, f'Кошелек {wallet_id} не найден')
             # Поиск кошелька по id записи
-            wallet = await self.session.get(Wallet, id)
-            wallet.total += amount
-            result_total = wallet.total
             await self.session.commit()
-
-            return result_total
+            return new_total
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise HTTPException(500, f'Ошибка базы данных: {str(e)}')
 
     async def withdraw(self, wallet_id: str, amount: int) -> int:
         try:
-            id = (await self.session.execute(
-                select(Wallet.id)
+            total = await self.session.execute(
+                update(Wallet)
                 .where(Wallet.wallet_id == wallet_id)
-                )).scalar_one_or_none()
-            if not id:
+                .values(total=Wallet.total-amount)
+                .returning(Wallet.total)
+                )
+            new_total = total.scalar_one_or_none()
+            if not new_total:
                 raise HTTPException(404, f'Кошелек {wallet_id} не найден')
-            # Поиск кошелька по id записи
-            wallet = await self.session.get(Wallet, id)
-            # Ошибка при недостатке средств
-            if amount > wallet.total:
-                return HTTPException(400, 'Недостаточно средств')       
-            wallet.total -= amount
-            total_result = wallet.total
             await self.session.commit()
-            return total_result
+            return new_total
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise HTTPException(500, f'Ошибка базы данных: {str(e)}')
