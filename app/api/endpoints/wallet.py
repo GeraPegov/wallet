@@ -29,7 +29,6 @@ async def create_new_wallet(
         HTTPException: Если произошла ошибка при добавлении в базу данных.
     """
     generator_hash = wallet_hash.hash()
-    # Создание кошелька
     await create_wallet.add_wallet(wallet_id=generator_hash)
     return {
         'wallet_id': generator_hash,
@@ -39,14 +38,14 @@ async def create_new_wallet(
 
 @router.post('/wallets/wallet_id/operation')
 async def transaction(
-        type_of_operation: str,
+        operation_type: str,
         wallet_id: str = Form(...),
         amount: int = Form(
             ...,
             gt=0,
             lt=10**5,
             description='Число должно быть положительным'),
-        make_transaction: WalletManager = Depends(get_wallet_manager)
+        manager: WalletManager = Depends(get_wallet_manager)
         ) -> dict:
     """
     Выполнение транзакции (внесение или снятие средств).
@@ -56,10 +55,10 @@ async def transaction(
     а также проверяет корректность суммы транзакции.
 
     Args:
-        type_of_operation (str): Тип операции: 'DEPOSIT' или 'WITHDRAW'.
+        operation_type (str): Тип операции: 'DEPOSIT' или 'WITHDRAW'.
         wallet_id (str): Уникальный ID кошелька.
         amount (int): Сумма транзакции. Положительная и меньше 100,000.
-        make_transaction (WalletManager): Менеджер для работы с кошельками.
+        access_to_repositories (WalletManager): Менеджер для работы с кошельками.
 
     Returns:
         dict: Статус операции и текущий баланс кошелька после транзакции.
@@ -67,10 +66,7 @@ async def transaction(
     Raises:
         HTTPException: Если тип операции неверный или произошла ошибка.
     """
-    if type_of_operation == 'DEPOSIT':
-        result = await make_transaction.deposit(wallet_id, amount)
-    elif type_of_operation == 'WITHDRAW':
-        result = await make_transaction.withdraw(wallet_id, amount)
+    result = await manager.transaction(wallet_id, amount, operation_type)
     return {
         'status': 'success',
         'balance': result

@@ -11,9 +11,7 @@ class Setting(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
 
-    model_config = SettingsConfigDict(
-        env_file=BASE_DIR / '.env'
-    )
+    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env")
 
 
 settings = Setting()
